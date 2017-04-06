@@ -22,7 +22,7 @@ class Users(db.Model):
     def __repr__(self):
         '''To print object in debugging.'''
 
-        return '<User %r>' % self.email 
+        return '<User {}>' .format(self.email)
 
     @property
     def id(self):
@@ -38,7 +38,7 @@ class BucketList(db.Model):
     bucket_name = db.Column(db.String(80), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.datetime.now)
     date_modified = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     items = db.relationship('BucketItem', backref='bucketlist')
 
 
@@ -53,3 +53,6 @@ class BucketItem(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.datetime.now)
     date_modified = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     done = db.Column(db.Boolean, default=False)
+
+
+db.create_all(bind='__all__')
