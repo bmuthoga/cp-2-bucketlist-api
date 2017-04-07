@@ -4,6 +4,9 @@ import datetime
 from app import app, db
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import (TimedJSONWebSignatureSerializer
+    as Serializer, BadSignature, SignatureExpired)
+from passlib.apps import custom_app_context as pwd_context
 
 
 
@@ -15,18 +18,44 @@ class Users(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(80), unique=True, nullable=True)
-    password = db.Column(db.String(80), nullable=False)
-    bucketlists = db.relationship('Bucketlist', backref='users')
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(80), nullable=False)
+
+    def hash_password(self, password):
+        self.password_hash = pwd_context.encrypt(password)
+
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
+
+    def generate_auth_token(self, expiration = 10000):
+        s = Serializer(app.config['SECRET_KEY'], expires_in = expiration)
+        return s.dumps({'id': self.user_id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+
+        # Valid but expired token
+        except SignatureExpired:
+            return None
+
+        # Invalid token
+        except BadSignature:
+            return None
+
+        user = Users.query.get(data['id'])
+        return user
 
     def __repr__(self):
         '''To print object in debugging.'''
 
         return '<User {}>' .format(self.email)
 
-    @property
-    def id(self):
-        return self.user_id
+    # @property
+    # def id(self):
+    #     return self.user_id
 
 
 class BucketList(db.Model):
@@ -38,7 +67,7 @@ class BucketList(db.Model):
     bucket_name = db.Column(db.String(80), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.datetime.now)
     date_modified = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-    created_by = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     items = db.relationship('BucketItem', backref='bucketlist')
 
 
