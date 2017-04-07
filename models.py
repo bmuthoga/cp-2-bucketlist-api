@@ -5,7 +5,7 @@ from app import app, db
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import (TimedJSONWebSignatureSerializer
-    as Serializer, BadSignature, SignatureExpired)
+                          as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
 

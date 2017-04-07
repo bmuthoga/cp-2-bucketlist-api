@@ -39,13 +39,52 @@ class BucketListsAPI(Resource):
         bucket_list = BucketList.query.filter_by(created_by=g.user.user_id).all()
 
         if bucket_list:
+            # import pdb; pdb.set_trace()
             try:
-                return marshal(bucket_list, bucketlist_fields), 200
+                self.reqparse = reqparse.RequestParser()
+                self.reqparse.add_argument('q', type=str, location='args')
+                self.reqparse.add_argument('limit', type=int, location='args', default=20)
+                self.reqparse.add_argument('page', type=int, location='args', default=1)
 
-            except:
+                args = self.reqparse.parse_args()
+                q = args['q']
+                limit = args['limit']
+                page = args['page']
+
+                if q:
+                    bucket_list = BucketList.query.filter(BucketList.created_by == g.user.user_id, BucketList.bucket_name.like('%'+q+'%')).paginate(page, limit)
+
+                else:
+                    bucket_list = BucketList.query.filter_by(created_by=g.user.user_id).paginate(page, limit)
+
+                if bucket_list.has_prev:
+                    previous_page = request.url + '?page=' + str(page-1) + '&limit=' + str(limit)
+
+                else:
+                    previous_page = 'None'
+
+                if bucket_list.has_next:
+                    next_page = request.url + '?page=' + str(page+1) + '&limit=' + str(limit)
+
+                else:
+                    next_page = 'None'
+
+                responseObject = {
+                    'message': {
+                        'next_page': next_page,
+                        'previous_page': previous_page,
+                        'total_pages': bucket_list.pages,
+                        'bucketlists': marshal(bucket_list.items, bucketlist_fields)
+                    }
+                }
+
+                return responseObject, 200
+                # return marshal(bucket_list, bucketlist_fields), 200
+
+            except Exception as e:
                 responseObject = {
                     'status': 'fail',
-                    'message': 'An error occured. Try again.'
+                    'message': 'An error occured. Try again.'+str(e)
                 }
 
                 return responseObject, 500
