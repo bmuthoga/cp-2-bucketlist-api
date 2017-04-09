@@ -1,15 +1,18 @@
+'''Bucketlist(s) API Endpoints'''
+
 from flask import Blueprint, Flask, g, request
 from flask_httpauth import HTTPTokenAuth
-from flask_restful import Api, Resource, reqparse, marshal
+from flask_restful import Api, reqparse, marshal, Resource
 
 from app import db
 from models import BucketList, BucketItem, Users
-from resources.serializer import bucketlist_item_fields, bucketlist_fields
+from resources.serializer import bucketlist_fields, bucketlist_item_fields
 
 auth = HTTPTokenAuth(scheme='Token')
 
 bucketlist_blueprint = Blueprint('bucketlists', __name__)
 api = Api(bucketlist_blueprint)
+
 
 @auth.verify_token
 def verify_token(token):
@@ -24,8 +27,8 @@ def verify_token(token):
     return True
 
 
-
 class BucketListsAPI(Resource):
+    '''Bucketlists API Endpoint'''
 
     decorators = [auth.login_required]
 
@@ -36,10 +39,12 @@ class BucketListsAPI(Resource):
         super(BucketListsAPI, self).__init__()
 
     def get(self):
+        '''Get method to get all bucketlists.'''
+
         bucket_list = BucketList.query.filter_by(created_by=g.user.user_id).all()
 
         if bucket_list:
-            # import pdb; pdb.set_trace()
+
             try:
                 self.reqparse = reqparse.RequestParser()
                 self.reqparse.add_argument('q', type=str, location='args')
@@ -52,10 +57,13 @@ class BucketListsAPI(Resource):
                 page = args['page']
 
                 if q:
-                    bucket_list = BucketList.query.filter(BucketList.created_by == g.user.user_id, BucketList.bucket_name.like('%'+q+'%')).paginate(page, limit)
+                    bucket_list = BucketList.query.filter(BucketList.created_by == g.user.user_id,\
+                                                          BucketList.bucket_name.like('%'+q+'%'))\
+                                                          .paginate(page, limit)
 
                 else:
-                    bucket_list = BucketList.query.filter_by(created_by=g.user.user_id).paginate(page, limit)
+                    bucket_list = BucketList.query.filter_by(created_by=g.user.user_id).\
+                        paginate(page, limit)
 
                 if bucket_list.has_prev:
                     previous_page = request.url + '?page=' + str(page-1) + '&limit=' + str(limit)
@@ -81,10 +89,10 @@ class BucketListsAPI(Resource):
                 return responseObject, 200
                 # return marshal(bucket_list, bucketlist_fields), 200
 
-            except Exception as e:
+            except:
                 responseObject = {
                     'status': 'fail',
-                    'message': 'An error occured. Try again.'+str(e)
+                    'message': 'An error occured. Try again.'
                 }
 
                 return responseObject, 500
@@ -98,10 +106,13 @@ class BucketListsAPI(Resource):
             return responseObject, 200
 
     def post(self):
+        '''POST method to create new bucketlist.'''
+
         args = self.reqparse.parse_args()
         bucketname = args['bucket_name']
 
-        bucket_list = BucketList.query.filter_by(bucket_name=bucketname, created_by=g.user.user_id).first()
+        bucket_list = BucketList.query.filter_by(bucket_name=bucketname,\
+                                                 created_by=g.user.user_id).first()
 
         if bucket_list:
             responseObject = {
@@ -126,17 +137,21 @@ class BucketListsAPI(Resource):
 
             return responseObject, 500
 
+
 class BucketListAPI(Resource):
+    '''Bucketlist API Endpoint.'''
 
     decorators = [auth.login_required]
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('bucket_name', type=str, required=True,
-                                    help='Invalid or no bucketlist name provided', location='json')
+                                   help='Invalid or no bucketlist name provided', location='json')
         super(BucketListAPI, self).__init__()
 
     def get(self, id):
+        '''GET method to get single bucketlist.'''
+
         bucket_list = BucketList.query.filter_by(bucket_id=id, created_by=g.user.user_id).first()
 
         if bucket_list:
@@ -160,6 +175,8 @@ class BucketListAPI(Resource):
             return responseObject, 200
 
     def put(self, id):
+        '''PUT method to update single bucketlist.'''
+
         args = self.reqparse.parse_args()
         bucketname = args['bucket_name']
 
@@ -189,6 +206,8 @@ class BucketListAPI(Resource):
             return responseObject, 404
 
     def delete(self, id):
+        '''DELETE method to delete single bucketlist.'''
+
         bucket_list = BucketList.query.filter_by(bucket_id=id, created_by=g.user.user_id).first()
 
         if bucket_list:

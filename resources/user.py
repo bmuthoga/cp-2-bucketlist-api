@@ -1,3 +1,4 @@
+'''Users API Endpoints'''
 
 from flask import Blueprint, Flask, request
 from flask_restful import Api, Resource, reqparse, inputs
@@ -9,16 +10,21 @@ from models import Users
 auth_blueprint = Blueprint('auth', __name__)
 api = Api(auth_blueprint)
 
+
 class LoginAPI(Resource):
+    '''Login API endpoint.'''
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email', type=inputs.regex(r"[^@]+@[^@]+\.[^@]+"), required=True,
-            help='Invalid or no email provided', location='json')
+                                   help='Invalid or no email provided', location='json')
         self.reqparse.add_argument('password', type=str, required=True,
-            help='Invalid or no password provided', location='json')
+                                   help='Invalid or no password provided', location='json')
         super(LoginAPI, self).__init__()
 
     def post(self):
+        '''POST method to login a user.'''
+
         args = self.reqparse.parse_args()
 
         try:
@@ -52,19 +58,23 @@ class LoginAPI(Resource):
 
 
 class RegisterAPI(Resource):
+    '''Register API endpoint.'''
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('first_name', type=str, required=True,
-            help='Invalid or no first name provided', location='json')
+                                   help='Invalid or no first name provided', location='json')
         self.reqparse.add_argument('last_name', type=str, required=True,
-            help='Invalid or no last name provided', location='json')
+                                   help='Invalid or no last name provided', location='json')
         self.reqparse.add_argument('email', type=inputs.regex(r"[^@]+@[^@]+\.[^@]+"), required=True,
-            help='Invalid or no email provided', location='json')
+                                   help='Invalid or no email provided', location='json')
         self.reqparse.add_argument('password', type=str, required=True,
-            help='Invalid or no password provided', location='json')
+                                   help='Invalid or no password provided', location='json')
         super(RegisterAPI, self).__init__()
 
     def post(self):
+        '''POST method to register a user.'''
+
         # get the post data
         args = self.reqparse.parse_args()
 
@@ -106,7 +116,7 @@ class RegisterAPI(Resource):
                 'status': 'fail',
                 'message': 'User already exists. Please Log in.',
             }
-            
+
             return responseObject, 202
 
 api.add_resource(LoginAPI, '/api/v1/auth/login', endpoint='login')

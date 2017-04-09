@@ -1,3 +1,5 @@
+'''Bucketlist and Items serializers'''
+
 from flask_restful import fields
 
 bucketlist_item_fields = {

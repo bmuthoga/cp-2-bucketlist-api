@@ -1,3 +1,5 @@
+'''Module for administrative tasks'''
+
 import os
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -12,10 +14,13 @@ manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 
+
 @manager.command
 def create_db():
     ''' Manually create tables in the db '''
     db.create_all()
+
+
 @manager.command
 def drop_db():
     ''' Manually drop tables in the db '''
@@ -23,4 +28,3 @@ def drop_db():
 
 if __name__ == '__main__':
     manager.run()
-    
