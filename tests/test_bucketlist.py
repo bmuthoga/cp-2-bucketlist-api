@@ -11,16 +11,11 @@ class BucketlistTestCase(BaseTestCase):
     def test_create_bucketlist(self):
         '''Testing if bucketlists successfully created.'''
 
-        # login = self.client.post('api/v1/auth/login', data=json.dumps(dict(
-        #     email='chuck@gmail.com',
-        #     password='1234'
-        # )), content_type='application/json')
-
         response = self.client.post('/api/v1/bucketlists', data=json.dumps(dict(
             bucket_name='holiday'
         )), content_type='application/json', headers=self.set_header())
 
-        self.assertIn(response, {'bucket_name': 'holiday'})
+        self.assertEqual(response.status_code, 200)
 
     def test_existing_bucket_list(self):
         '''Testing if create already existing bucketlist handled.'''
@@ -33,10 +28,7 @@ class BucketlistTestCase(BaseTestCase):
             bucket_name='swimming'
         )), content_type='application/json', headers=self.set_header())
 
-        self.assertIn(response, {
-            'status': 'fail',
-            'message': 'Bucket list already exists.'
-        })
+        self.assertEqual(response.status_code, 409)
 
     def test_get_bucketlists(self):
         '''Testing if bucketlists successfully fetched.'''
@@ -48,7 +40,35 @@ class BucketlistTestCase(BaseTestCase):
         response = self.client.get('/api/v1/bucketlists', content_type='application/json',
                                    headers=self.set_header())
 
-        self.assertIn(response, {'bucket_name': 'explore'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_bucketlists_none_existing_yet(self):
+        '''Testing if fetching bucketlists while none yet made is handled.'''
+
+        response = self.client.get('/api/v1/bucketlists/', content_type='application/json',
+                                   headers=self.set_header())
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_single_bucketlist(self):
+        '''Testing if single bucketlist successfully fetched.'''
+
+        self.client.post('/api/v1/bucketlists/', data=json.dumps(dict(
+            bucket_name='workout'
+        )), content_type='application/json', headers=self.set_header())
+
+        response = self.client.get('/api/v1/bucketlists/1', content_type='application/json',
+                                   headers=self.set_header())
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_single_bucketlist_none_existing_yet(self):
+        '''Testing if fetching single bucketlist while not existing is handled.'''
+
+        response = self.client.get('/api/v1/bucketlists/1', content_type='application/json',
+                                   headers=self.set_header())
+
+        self.assertEqual(response.status_code, 200)
 
     def test_update_bucketlist(self):
         '''Testing if bucketlists successfully updated.'''
@@ -61,7 +81,16 @@ class BucketlistTestCase(BaseTestCase):
             bucket_name='mountain climbing'
         )), content_type='application/json', headers=self.set_header())
 
-        self.assertIn(response, {'bucket_name': 'mountain climbing'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_bucketlist_not_existing(self):
+        '''Testing if updating none existing bucketlist is handled.'''
+
+        response = self.client.put('/api/v1/bucketlists/1', data=json.dumps(dict(
+            bucket_name='mountain climbing'
+        )), content_type='application/json', headers=self.set_header())
+
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_bucketlist(self):
         '''Testing if bucketlists successfully deleted.'''
@@ -73,7 +102,12 @@ class BucketlistTestCase(BaseTestCase):
         response = self.client.delete('/api/v1/bucketlists/1', content_type='application/json',
                                       headers=self.set_header())
 
-        self.assertIn(response, {
-            'message': 'Bucketlist deleted.',
-            "status": "success"
-        })
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_bucketlist_not_existing(self):
+        '''Testing if deleting none existing bucketlist is handled.'''
+
+        response = self.client.delete('/api/v1/bucketlists/1', content_type='application/json',
+                                      headers=self.set_header())
+
+        self.assertEqual(response.status_code, 404)

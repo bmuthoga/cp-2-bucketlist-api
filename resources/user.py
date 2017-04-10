@@ -4,6 +4,11 @@ from flask import Blueprint, Flask, request
 from flask_restful import Api, Resource, reqparse, inputs
 from flask_sqlalchemy import SQLAlchemy
 
+import os.path
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from app import db
 from models import Users
 

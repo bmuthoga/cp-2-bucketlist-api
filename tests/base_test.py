@@ -2,10 +2,14 @@
 
 import json
 import os
+import os.path
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from flask_testing import TestCase
 
-from models import BucketList, BucketItem, Users
+# from models import BucketList, BucketItem, Users
 from app import app, db
 
 
@@ -29,6 +33,22 @@ class BaseTestCase(TestCase):
             email='chuck@gmail.com',
             password='1234'
         )), content_type='application/json')
+
+    def set_header(self):
+        """Set headers"""
+
+        response = self.client.post('api/v1/auth/login', data=json.dumps(dict(
+            email='chuck@gmail.com',
+            password='1234'
+        )), content_type='application/json')
+
+        data = json.loads(response.data.decode())
+        self.token = data['auth_token']
+
+        return {'Authorization': 'Token ' + self.token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+               }
 
     def tearDown(self):
         '''Destroys the session and drops the db.'''

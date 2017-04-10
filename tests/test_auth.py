@@ -19,20 +19,26 @@ class AuthTestCase(BaseTestCase):
             password='1234'
         )), content_type='application/json')
 
-        self.assertIn(response, {
-            'status': 'success',
-            'message': 'Successfully registered.'
-            })
+        self.assertEqual(response.status_code, 201)
+
+    def test_already_registered_handled(self):
+        '''Testing if registering already existing user is handled.'''
+
+        response = self.client.post('api/v1/auth/register', data=json.dumps(dict(
+            first_name='chuck',
+            last_name='norris',
+            email='chuck@gmail.com',
+            password='1234'
+        )), content_type='application/json')
+
+        self.assertEqual(response.status_code, 202)
 
     def test_login(self):
         '''Testing successful login.'''
 
         response = self.client.post('api/v1/auth/login', data=json.dumps(dict(
-            email='allen@gmail.com',
+            email='chuck@gmail.com',
             password='1234'
         )), content_type='application/json')
 
-        self.assertIn(response, {
-            'status': 'success',
-            'message': 'Login Successful'
-            })
+        self.assertEqual(response.status_code, 200)
