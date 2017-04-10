@@ -68,7 +68,7 @@ class BucketlistTestCase(BaseTestCase):
         response = self.client.get('/api/v1/bucketlists/1', content_type='application/json',
                                    headers=self.set_header())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
 
     def test_update_bucketlist(self):
         '''Testing if bucketlists successfully updated.'''

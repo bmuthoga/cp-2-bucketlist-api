@@ -87,7 +87,6 @@ class BucketListsAPI(Resource):
                 }
 
                 return responseObject, 200
-                # return marshal(bucket_list, bucketlist_fields), 200
 
             except:
                 responseObject = {
@@ -168,11 +167,11 @@ class BucketListAPI(Resource):
 
         else:
             responseObject = {
-                'status': 'success',
+                'status': 'fail',
                 'message': 'No bucketlist with that id.'
             }
 
-            return responseObject, 200
+            return responseObject, 404
 
     def put(self, id):
         '''PUT method to update single bucketlist.'''

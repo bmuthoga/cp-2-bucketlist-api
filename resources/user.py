@@ -51,7 +51,7 @@ class LoginAPI(Resource):
                     'message': 'Invalid email or password.'
                 }
 
-                return responseObject, 404
+                return responseObject, 403
 
         except:
             responseObject = {
