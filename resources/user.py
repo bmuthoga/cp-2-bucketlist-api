@@ -122,7 +122,7 @@ class RegisterAPI(Resource):
                 'message': 'User already exists. Please Log in.',
             }
 
-            return responseObject, 202
+            return responseObject, 409
 
 api.add_resource(LoginAPI, '/api/v1/auth/login', endpoint='login')
 api.add_resource(RegisterAPI, '/api/v1/auth/register', endpoint='register')

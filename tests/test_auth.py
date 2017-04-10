@@ -31,7 +31,7 @@ class AuthTestCase(BaseTestCase):
             password='1234'
         )), content_type='application/json')
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 409)
 
     def test_login(self):
         '''Testing successful login.'''
