@@ -7,6 +7,6 @@ dependencies:
    - pip install coveralls
 test:
  override:
-   - nosetests -v --rednose --with-coverage --cover-html
+   - nosetests --with-coverage
  post:
    - coveralls
