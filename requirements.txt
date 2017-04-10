@@ -1,6 +1,7 @@
 Flask
 Flask-RESTful
 Flask-SQLAlchemy
+Flask-Testing
 nose
 passlib
 requests
