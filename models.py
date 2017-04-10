@@ -2,8 +2,6 @@
 
 import datetime
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
@@ -61,10 +59,6 @@ class Users(db.Model):
         '''To print object in debugging.'''
 
         return '<User {}>' .format(self.email)
-
-    # @property
-    # def id(self):
-    #     return self.user_id
 
 
 class BucketList(db.Model):

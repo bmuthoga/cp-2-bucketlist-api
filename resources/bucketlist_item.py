@@ -1,6 +1,6 @@
 '''Bucket Item(s) API Endpoints'''
 
-from flask import Blueprint, Flask, g, request
+from flask import Blueprint, g
 from flask_httpauth import HTTPTokenAuth
 from flask_restful import Api, marshal, reqparse, Resource
 

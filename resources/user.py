@@ -1,8 +1,7 @@
 '''Users API Endpoints'''
 
-from flask import Blueprint, Flask, request
+from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, inputs
-from flask_sqlalchemy import SQLAlchemy
 
 import os.path
 import sys

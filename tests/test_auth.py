@@ -1,7 +1,6 @@
 '''User registration and login tests'''
 
 import json
-import requests
 
 from tests.base_test import BaseTestCase
 

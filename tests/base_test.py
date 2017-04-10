@@ -9,7 +9,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from flask_testing import TestCase
 
-# from models import BucketList, BucketItem, Users
 from app import app, db
 
 

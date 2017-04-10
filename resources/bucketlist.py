@@ -1,6 +1,6 @@
 '''Bucketlist(s) API Endpoints'''
 
-from flask import Blueprint, Flask, g, request
+from flask import Blueprint, g, request
 from flask_httpauth import HTTPTokenAuth
 from flask_restful import Api, reqparse, marshal, Resource
 
