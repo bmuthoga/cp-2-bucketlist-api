@@ -26,11 +26,11 @@ Set the required environment secret key.
 
 Create the database by running migrations:
 
-`python migrate.py db init`
+`python manage.py db init`
 
-`python migrate.py db migrate`
+`python manage.py db migrate`
 
-`python migrate.py db upgrade`
+`python manage.py db upgrade`
 
 **Usage**
 
