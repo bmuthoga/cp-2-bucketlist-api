@@ -20,9 +20,14 @@ Install the required packages:
 
 `pip install -r requirements.txt`
 
-Set the required environment configuration key.
+Set the following required environment variables:
 
-Set the required environment secret key.
+| VARIABLE        | VALUE           | DESCRIPTION                        |
+| --------------- |----------------:| ----------------------------------:|
+| APP_SETTINGS    |                 | The workon environment.            |
+| DATABASE_URL    |                 |   The URL to your database         |
+| SECRET_KEY      |                 |    Set your preferred secret key   |
+
 
 Create the database by running migrations:
 
