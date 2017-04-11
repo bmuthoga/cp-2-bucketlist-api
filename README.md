@@ -20,7 +20,7 @@ Install the required packages:
 
 `pip install -r requirements.txt`
 
-Set the following required environment variables:
+Create a .env file and set the following required environment variables in it:
 
 | VARIABLE        | VALUE           | DESCRIPTION                        |
 | --------------- |----------------:| ----------------------------------:|
